@@ -78,7 +78,7 @@ const Hero = () => {
             <FaEnvelope />
           </a>
           <a href="/solis-portfolio/assets/Solis_Jake_Ronald.pdf" download target="_blank" rel="noopener noreferrer" aria-label="Download Curriculum Vitae" className="cv-download-btn">
-            CV
+            RESUME
           </a>
           <a href="https://www.instagram.com/padimsolis/" target="_blank" rel="noreferrer" aria-label="Instagram">
             <FaInstagram />
