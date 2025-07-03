@@ -1,0 +1,16 @@
+@use './variables' as *;
+
+
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background-color: $ironman-dark;
+  color: $ironman-text;
+  overflow-x: hidden;
+}
+
+
+a {
+  color: $ironman-gold;
+  text-decoration: none;
+}

@@ -1,0 +1,16 @@
+@mixin holographic-border {
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #ff004c, #ff9900, #ffe600, #00ffd5, #0077ff, #ff00c8) 1;
+  border-radius: 12px;
+  animation: holo-glow 3s linear infinite;
+}
+
+@keyframes holo-glow {
+  0% {
+    border-image-slice: 1;
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
