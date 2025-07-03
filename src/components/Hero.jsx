@@ -77,7 +77,7 @@ const Hero = () => {
           <a href="mailto:jakeronaldsolis@gmail.com" target="_blank" rel="noreferrer">
             <FaEnvelope />
           </a>
-          <a href="/solis-portfolio/assets/Solis_Jake_Ronald.pdf" download target="_blank" rel="noopener noreferrer" aria-label="Download Curriculum Vitae" className="cv-download-btn">
+          <a href="/solis-portfolio/assets/Solis_Jake_Ronald.pdf" download target="_blank" rel="noopener noreferrer" aria-label="Download Resume" className="cv-download-btn">
             RESUME
           </a>
           <a href="https://www.instagram.com/padimsolis/" target="_blank" rel="noreferrer" aria-label="Instagram">
