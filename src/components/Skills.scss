@@ -15,7 +15,8 @@
   margin-right: 0;
   overflow-x: hidden;
   position: relative;
-  background: linear-gradient(120deg, #1a1a1a 0%, #a80000 100%);
+  /* background: linear-gradient(120deg, #1a1a1a 0%, #a80000 100%); */
+  /* Remove background for rocketship effect */
   opacity: 0.98;
 }
 
@@ -120,11 +121,20 @@
 // Shimmer effect for cards
 @keyframes shimmer {
   0% {
-    background-position: -200% 0;
-}
+    background-position: -120% -120%;
+    opacity: 0.0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  50% {
+    background-position: 120% 120%;
+    opacity: 0.7;
+  }
   100% {
-    background-position: 200% 0;
-}
+    background-position: 120% 120%;
+    opacity: 0.0;
+  }
 }
 
 // Skill card
@@ -149,23 +159,9 @@
   transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
   position: relative;
   overflow: hidden;
-  /* Shimmer overlay */
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent 0%, #ffe06633 40%, #fff7b399 60%, transparent 100%);
-    background-size: 200% 100%;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.7;
-    animation: none;
-}
-  &:hover::before {
-    animation: shimmer 3.5s infinite linear;
+    /* Remove shimmer overlay */
+    display: none !important;
   }
 }
 
@@ -175,9 +171,10 @@
 }
 
 .skill-card:hover {
-  box-shadow: 0 12px 60px #ffe06655, 0 0 0 6px #ffe06655;
+  box-shadow: none;
   border-color: #ffe066cc;
   background: rgba(255,255,255,0.18);
+  animation: none;
 }
 
 .skill-icon {
@@ -284,9 +281,9 @@
   font-size: 1.7rem;
 }
 .swiper-button-next:hover, .swiper-button-prev:hover {
-  background: #fff2;
-  color: #fff;
-  box-shadow: 0 0 24px #ffe066;
+  background: transparent !important;
+  color: #ffe066 !important;
+  box-shadow: none !important;
 }
 
 .swiper-pagination-bullets {
@@ -566,4 +563,12 @@
 .skills-title, .skills-intro, .skills-grid, .skills-swiper, .skills-swiper-dots, .swiper, .swiper-slide, .skill-card {
   position: relative;
   z-index: 2;
+}
+
+@keyframes rgb-glow {
+  0% { box-shadow: 0 0 24px 4px #ff0080, 0 0 0 6px #ffe06655; }
+  25% { box-shadow: 0 0 32px 8px #7928ca, 0 0 0 6px #ffe06655; }
+  50% { box-shadow: 0 0 40px 12px #00ffea, 0 0 0 6px #ffe06655; }
+  75% { box-shadow: 0 0 32px 8px #7928ca, 0 0 0 6px #ffe06655; }
+  100% { box-shadow: 0 0 24px 4px #ff0080, 0 0 0 6px #ffe06655; }
 }
