@@ -80,8 +80,8 @@ const Hero = () => {
           <a href="/solis-portfolio/assets/Solis_Jake_Ronald.pdf" download target="_blank" rel="noopener noreferrer" aria-label="Download Resume" className="cv-download-btn">
             RESUME
           </a>
-          <a href="https://www.instagram.com/padimsolis/" target="_blank" rel="noreferrer" aria-label="Instagram">
-            <FaInstagram />
+          <a href="https://www.linkedin.com/in/jake-ronald-solis-0a082a373" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+            <FaLinkedin />
           </a>
         </motion.div>
       </div>
