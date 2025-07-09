@@ -339,6 +339,13 @@
   margin-right: auto;
   display: block;
   max-width: 95%;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', 'Helvetica Neue', system-ui, sans-serif;
+}
+.modal-desc li {
+  font-family: inherit;
+  font-size: 1em;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.01em;
 }
 .modal-link {
   display: inline-block;

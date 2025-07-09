@@ -6,17 +6,31 @@ const projects = [
   {
     title: 'SIGNED: Sign Language Tutorial',
     image: '/solis-portfolio/assets/signed.png',
-    description: 'A comprehensive sign language tutorial platform with interactive lessons and audio/visual feedback. Two machine learning algorithms were compared in this project: Random Forest and Support Vector Machines. SVM came on top and recognized hand gestures with better accuracy. A webcam was needed for video input. Moreover, this project utilized Python and Django.'
+    description: [
+      'Developed an interactive sign language learning platform with real-time audio/visual feedback for enhanced accessibility.',
+      'Implemented and compared Random Forest and SVM machine learning models; achieved superior gesture recognition accuracy with SVM.',
+      'Integrated webcam-based gesture input for hands-on practice and assessment.',
+      'Built with Python and Django, demonstrating full-stack and ML integration skills.'
+    ]
   },
   {
     title: 'ARGUEL Summarizer',
     image: '/solis-portfolio/assets/arguel.png',
-    description: 'An AI-powered tool that summarizes arguments and long-form content into concise, digestible points. A pre-trained BERT model was used for NLP tasks in this project. Moreover, this project utilized Python and Django.'
+    description: [
+      'Created an AI-powered tool to summarize complex arguments and long-form content into concise, actionable insights.',
+      'Leveraged a pre-trained BERT model for advanced natural language processing and summarization.',
+      'Showcased expertise in Python, Django, and NLP for production-ready applications.'
+    ]
   },
   {
     title: 'Inventory System with FIFO Logic',
     image: '/solis-portfolio/assets/inv.png',
-    description: 'A robust inventory management system implementing FIFO logic for accurate stock tracking and reporting. It included sales, purchases, adjustments, and inventory reports. It also featured user restrictions and roles - set by the admin. Moreover, this project utilized PHP and JS with Bootstrap for the frontend.'
+    description: [
+      'Engineered a robust inventory management system using FIFO logic for precise stock tracking and reporting.',
+      'Implemented modules for sales, purchases, adjustments, and comprehensive inventory analytics.',
+      'Designed user roles and permissions for secure, role-based access control.',
+      'Utilized PHP, JavaScript, and Bootstrap to deliver a responsive, user-friendly interface.'
+    ]
   }
 ];
 
@@ -239,7 +253,11 @@ const Projects = () => {
                 </div>
                 <div className="modal-info-col">
                   <h3 className="modal-title">{modalProject.title}</h3>
-                  <p className="modal-desc">{modalProject.description}</p>
+                  <ul className="modal-desc">
+                    {modalProject.description.map((point, idx) => (
+                      <li key={idx}>{point}</li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </motion.div>
