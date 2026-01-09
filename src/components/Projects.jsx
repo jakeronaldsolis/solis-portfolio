@@ -1,6 +1,14 @@
-import './Projects.scss';
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FaTimes, FaArrowRight } from 'react-icons/fa'
+import './Projects.scss'
+import Lightbox from 'yet-another-react-lightbox'
+import 'yet-another-react-lightbox/styles.css'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation, Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 
 const projects = [
   {
@@ -11,16 +19,18 @@ const projects = [
       'Implemented and compared Random Forest and SVM machine learning models; achieved superior gesture recognition accuracy with SVM.',
       'Integrated webcam-based gesture input for hands-on practice and assessment.',
       'Built with Python and Django, demonstrating full-stack and ML integration skills.'
-    ]
+    ],
+    technologies: ['Python', 'Django', 'Machine Learning', 'Computer Vision', 'SVM', 'Random Forest']
   },
   {
-    title: 'ARGUEL Summarizer',
+    title: 'ARGUEL\nSummarizer',
     image: '/solis-portfolio/assets/arguel.png',
     description: [
       'Created an AI-powered tool to summarize complex arguments and long-form content into concise, actionable insights.',
       'Leveraged a pre-trained BERT model for advanced natural language processing and summarization.',
       'Showcased expertise in Python, Django, and NLP for production-ready applications.'
-    ]
+    ],
+    technologies: ['Python', 'Django', 'BERT', 'NLP', 'AI', 'Natural Language Processing']
   },
   {
     title: 'Inventory System with FIFO Logic',
@@ -30,242 +40,463 @@ const projects = [
       'Implemented modules for sales, purchases, adjustments, and comprehensive inventory analytics.',
       'Designed user roles and permissions for secure, role-based access control.',
       'Utilized PHP, JavaScript, and Bootstrap to deliver a responsive, user-friendly interface.'
-    ]
+    ],
+    technologies: ['PHP', 'JavaScript', 'Bootstrap', 'MySQL', 'FIFO Logic', 'Inventory Management']
   }
-];
-
-const fadeIn = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i = 1) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.15,
-      duration: 0.7,
-      ease: 'easeOut',
-    },
-  }),
-};
-
-const modalVariants = {
-  hidden: { opacity: 0, y: 60, scale: 0.96 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 70, damping: 18 } },
-  exit: { opacity: 0, y: 60, scale: 0.96, transition: { duration: 0.25 } },
-};
-
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.25 } },
-  exit: { opacity: 0, transition: { duration: 0.2 } },
-};
-
-const SHAPES = [
-  { type: 'circle', color: '#ffe066' },
-  { type: 'triangle', color: '#a80000' },
-  { type: 'square', color: '#fff' },
-  { type: 'hex', color: '#d4af37' },
-  { type: 'pent', color: '#ff6a00' },
-];
-const NUM_SHAPES = 9;
-const SHAPE_SIZE_DESKTOP = 64;
-const SHAPE_SIZE_MOBILE = 36;
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomDirection() {
-  return Math.random() < 0.5 ? -1 : 1;
-}
+]
 
 const Projects = () => {
-  const [modalProject, setModalProject] = useState(null);
-  const [shapePositions, setShapePositions] = useState([]);
-  const sectionRef = useRef(null);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+  const [modalProject, setModalProject] = useState(null)
+  const [enlargedImage, setEnlargedImage] = useState(null)
+  const [isVisible, setIsVisible] = useState(false)
+  const [isSmallScreen, setIsSmallScreen] = useState(false)
+  const [showRotateMessage, setShowRotateMessage] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const projectsRef = useRef(null)
+  const [scrollPosition, setScrollPosition] = useState(0)
 
+  // Intersection Observer for animations
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 600);
-      if (sectionRef.current) {
-        setContainerSize({
-          width: sectionRef.current.offsetWidth,
-          height: sectionRef.current.offsetHeight
-        });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (projectsRef.current) {
+      observer.observe(projectsRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  // Check screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth >= 0 && window.innerWidth <= 767)
+      setIsMobile(window.innerWidth >= 0 && window.innerWidth <= 803)
+    }
+
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
+
+  // Modal body scroll lock
+  useEffect(() => {
+    if (modalProject || enlargedImage) {
+      // Don't override the fixed positioning we set in openModal
+      if (!modalProject) {
+        document.body.style.overflow = 'hidden';
       }
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (!containerSize.width || !containerSize.height) return;
-    setShapePositions(Array.from({ length: NUM_SHAPES }).map((_, i) => {
-      const angle = (Math.PI * 2 * i) / NUM_SHAPES + Math.PI / NUM_SHAPES;
-      const speed = isMobile ? 0.18 : 0.35;
-      return {
-        x: getRandomInt(0, containerSize.width - (isMobile ? SHAPE_SIZE_MOBILE : SHAPE_SIZE_DESKTOP)),
-        y: getRandomInt(0, containerSize.height - (isMobile ? SHAPE_SIZE_MOBILE : SHAPE_SIZE_DESKTOP)),
-        dx: Math.cos(angle) * speed,
-        dy: Math.sin(angle) * speed,
-        type: SHAPES[i % SHAPES.length].type,
-        color: SHAPES[i % SHAPES.length].color
-      };
-    }));
-  }, [containerSize.width, containerSize.height, isMobile]);
-
-  useEffect(() => {
-    if (!containerSize.width || !containerSize.height || shapePositions.length !== NUM_SHAPES) return;
-    let raf;
-    function animate() {
-      setShapePositions(prev => prev.map((pos) => {
-        let { x, y, dx, dy, type, color } = pos;
-        const size = isMobile ? SHAPE_SIZE_MOBILE : SHAPE_SIZE_DESKTOP;
-        x += dx;
-        y += dy;
-        if (x <= 0 || x >= containerSize.width - size) dx *= -1;
-        if (y <= 0 || y >= containerSize.height - size) dy *= -1;
-        x = Math.max(0, Math.min(x, containerSize.width - size));
-        y = Math.max(0, Math.min(y, containerSize.height - size));
-        return { x, y, dx, dy, type, color };
-      }));
-      raf = requestAnimationFrame(animate);
-    }
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, [containerSize.width, containerSize.height, isMobile, shapePositions.length]);
-
-  useEffect(() => {
-    if (modalProject) {
-      document.body.classList.add('modal-open');
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.style.overflow = 'unset';
     }
+
     return () => {
-      document.body.classList.remove('modal-open');
-    };
-  }, [modalProject]);
-
-  const openModal = (project) => setModalProject(project);
-  const closeModal = () => setModalProject(null);
-
-  const renderShape = (shape, i) => {
-    const size = isMobile ? SHAPE_SIZE_MOBILE : SHAPE_SIZE_DESKTOP;
-    const style = {
-      position: 'absolute',
-      left: shape.x,
-      top: shape.y,
-      width: size,
-      height: size,
-      opacity: 0.13,
-      zIndex: 0,
-      pointerEvents: 'none',
-      transition: 'opacity 0.3s',
-    };
-    switch (shape.type) {
-      case 'circle':
-        return <div key={i} style={{ ...style, borderRadius: '50%', background: shape.color }} />;
-      case 'square':
-        return <div key={i} style={{ ...style, borderRadius: '0.3em', background: shape.color }} />;
-      case 'triangle':
-        return <svg key={i} style={style} viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill={shape.color} /></svg>;
-      case 'hex':
-        return <svg key={i} style={style} viewBox="0 0 100 100"><polygon points="50,10 90,35 90,75 50,90 10,75 10,35" fill={shape.color} /></svg>;
-      case 'pent':
-        return <svg key={i} style={style} viewBox="0 0 100 100"><polygon points="50,10 90,40 73,90 27,90 10,40" fill={shape.color} /></svg>;
-      default:
-        return null;
+      document.body.style.overflow = 'unset';
     }
-  };
+  }, [modalProject, enlargedImage])
+
+  const openModal = (project, event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    // Save current scroll position
+    const currentScrollPosition = window.pageYOffset;
+    setScrollPosition(currentScrollPosition);
+    
+    // Prevent any scroll changes
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${currentScrollPosition}px`;
+    document.body.style.width = '100%';
+    
+    setModalProject(project);
+  }
+  const closeModal = () => {
+    setModalProject(null);
+    
+    // Restore scroll position and remove fixed positioning
+    const scrollY = document.body.style.top;
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    
+    if (scrollY) {
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+  }
+  const openEnlargedImage = (imageSrc, imageAlt) => {
+    setEnlargedImage({ src: imageSrc, alt: imageAlt })
+    if (isSmallScreen) {
+      setShowRotateMessage(true)
+      setTimeout(() => setShowRotateMessage(false), 3000)
+    }
+  }
+  const closeEnlargedImage = () => {
+    setEnlargedImage(null)
+    setShowRotateMessage(false)
+  }
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: 'easeOut'
+      }
+    }
+  }
+
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut'
+      }
+    }
+  }
+
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 50 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 20
+      }
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.9,
+      y: 50,
+      transition: {
+        duration: 0.3
+      }
+    }
+  }
+
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.3 } },
+    exit: { opacity: 0, transition: { duration: 0.2 } }
+  }
 
   return (
-    <section className="projects-section" id="projects" ref={sectionRef}>
-      <div className="projects-bg-shapes">
-        {shapePositions.map(renderShape)}
+    <section id="projects" className="projects" ref={projectsRef}>
+      {/* Background Elements */}
+      <div className="projects__background">
+        <div className="projects__background-gradient" />
+        <div className="projects__background-pattern" />
       </div>
-      <motion.h2
-        className="projects-title"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.7 }}
-        transition={{ duration: 0.7 }}
+
+      {/* Main Container */}
+      <motion.div
+        className="projects__container"
+        variants={containerVariants}
+        initial="hidden"
+        animate={isVisible ? "visible" : "hidden"}
       >
-        Projects
-      </motion.h2>
-      <motion.p
-        className="projects-intro"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.7 }}
-        transition={{ duration: 0.7, delay: 0.1 }}
-      >
-        A selection of my recent work. Click a project to learn more.
-      </motion.p>
-      <div className="projects-grid">
-        {projects.map((project, idx) => (
+        {/* Section Header */}
+        <motion.div className="projects__header" variants={itemVariants}>
           <motion.div
-            className="project-card"
-            key={project.title}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeIn}
-            custom={idx}
-            onClick={() => openModal(project)}
-            tabIndex={0}
-            role="button"
-            aria-label={`Open details for ${project.title}`}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') openModal(project); }}
+            className="projects__badge"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.3, duration: 0.6 }}
           >
-            <div className="project-image-wrapper">
-              <img src={project.image} alt={project.title} className="project-image" loading="lazy" />
-            </div>
-            <div className="project-content">
-              <h3 className="project-title">{project.title}</h3>
-            </div>
+            <span className="projects__badge-text">Portfolio</span>
           </motion.div>
-        ))}
-      </div>
+          
+          <motion.h2 className="projects__title" variants={itemVariants}>
+            Featured Projects
+          </motion.h2>
+          
+          <motion.p className="projects__subtitle" variants={itemVariants}>
+            A showcase of my recent work, demonstrating skills in web development, machine learning, and problem-solving
+          </motion.p>
+        </motion.div>
+
+        {/* Projects Grid/Swiper */}
+        {isMobile ? (
+          <div className="projects__swiper-container">
+            <Swiper
+              modules={[Navigation, Pagination]}
+              spaceBetween={20}
+              slidesPerView={1}
+              navigation={true}
+              pagination={{ clickable: true }}
+              className="projects__swiper"
+              breakpoints={{
+                480: {
+                  slidesPerView: 1,
+                  spaceBetween: 20
+                },
+                768: {
+                  slidesPerView: 1,
+                  spaceBetween: 20
+                }
+              }}
+            >
+              {projects.map((project, idx) => (
+                <SwiperSlide key={project.title}>
+                  <motion.div
+                    className="projects__card"
+                    variants={cardVariants}
+                    whileHover={{ 
+                      y: -8,
+                      transition: { duration: 0.3 }
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="projects__card-image">
+                      <img 
+                        src={project.image} 
+                        alt={project.title} 
+                        loading="lazy"
+                      />
+                      <div className="projects__card-overlay">
+                        <motion.button
+                          className="projects__card-button"
+                          onClick={(event) => openModal(project, event)}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <FaArrowRight />
+                          View Details
+                        </motion.button>
+                      </div>
+                    </div>
+                    
+                    <div className="projects__card-content">
+                      <h3 className="projects__card-title">{project.title}</h3>
+                      
+                      <div className="projects__card-tech">
+                        {project.technologies.slice(0, 4).map((tech, techIdx) => (
+                          <span key={techIdx} className="projects__card-tech-tag">
+                            {tech}
+                          </span>
+                        ))}
+                        {project.technologies.length > 4 && (
+                          <span className="projects__card-tech-more">
+                            +{project.technologies.length - 4} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        ) : (
+          <div className="projects__grid">
+            {projects.map((project, idx) => (
+              <motion.div
+                key={project.title}
+                className="projects__card"
+                variants={cardVariants}
+                whileHover={{ 
+                  y: -8,
+                  transition: { duration: 0.3 }
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="projects__card-image">
+                  <img 
+                    src={project.image} 
+                    alt={project.title} 
+                    loading="lazy"
+                  />
+                  <div className="projects__card-overlay">
+                    <motion.button
+                      className="projects__card-button"
+                      onClick={(event) => openModal(project, event)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FaArrowRight />
+                      View Details
+                    </motion.button>
+                  </div>
+                </div>
+                
+                <div className="projects__card-content">
+                  <h3 className="projects__card-title">{project.title}</h3>
+                  
+                  <div className="projects__card-tech">
+                    {project.technologies.slice(0, 4).map((tech, techIdx) => (
+                      <span key={techIdx} className="projects__card-tech-tag">
+                        {tech}
+                      </span>
+                    ))}
+                    {project.technologies.length > 4 && (
+                      <span className="projects__card-tech-more">
+                        +{project.technologies.length - 4} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+      </motion.div>
+
+      {/* Project Modal */}
       <AnimatePresence>
         {modalProject && (
           <motion.div
-            className="project-modal-overlay"
+            className="projects__modal-overlay"
+            variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            variants={overlayVariants}
             onClick={closeModal}
           >
             <motion.div
-              className="project-modal"
+              className="projects__modal"
+              variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              variants={modalVariants}
-              onClick={e => e.stopPropagation()}
-              tabIndex={-1}
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="modal-content">
-                <div className="modal-image-col">
-                  <img src={modalProject.image} alt={modalProject.title} className="modal-image" />
+              <div className="projects__modal-header">
+                <h3 className="projects__modal-title">{modalProject.title}</h3>
+                <button
+                  className="projects__modal-close"
+                  onClick={closeModal}
+                  aria-label="Close modal"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="projects__modal-content">
+                <div className="projects__modal-image">
+                  <img 
+                    src={modalProject.image} 
+                    alt={modalProject.title}
+                    loading="lazy"
+                    onClick={() => openEnlargedImage(modalProject.image, modalProject.title)}
+                  />
                 </div>
-                <div className="modal-info-col">
-                  <h3 className="modal-title">{modalProject.title}</h3>
-                  <ul className="modal-desc">
-                    {modalProject.description.map((point, idx) => (
-                      <li key={idx}>{point}</li>
-                    ))}
-                  </ul>
+                
+                <div className="projects__modal-details">
+                  <div className="projects__modal-description">
+                    <h4>Project Overview</h4>
+                    <ul>
+                      {modalProject.description.map((point, idx) => (
+                        <li key={idx}>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div className="projects__modal-tech">
+                    <h4>Technologies Used</h4>
+                    <div className="projects__modal-tech-tags">
+                      {modalProject.technologies.map((tech, idx) => (
+                        <span key={idx} className="projects__modal-tech-tag">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
-  );
-};
 
-export default Projects;
+      {/* Responsive Lightbox for enlarged image */}
+      <Lightbox
+        open={!!enlargedImage}
+        close={closeEnlargedImage}
+        slides={enlargedImage ? [{ src: enlargedImage.src }] : []}
+        controller={{ closeOnBackdropClick: true }}
+        swipe={{ enabled: false, threshold: 0, velocity: 0 }}
+        carousel={{ finite: true, preload: 0 }}
+        render={{
+          buttonPrev: () => null,
+          buttonNext: () => null,
+          toolbar: () => null,
+          slide: ({ slide }) => (
+            <div style={{ 
+              width: '100%', 
+              height: '100%', 
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <img 
+                src={slide.src} 
+                alt={enlargedImage?.alt || ''} 
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'contain',
+                  userSelect: 'none',
+                  WebkitUserSelect: 'none',
+                  MozUserSelect: 'none',
+                  msUserSelect: 'none',
+                  pointerEvents: 'none'
+                }} 
+              />
+              {showRotateMessage && (
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'rgba(0, 0, 0, 0.8)',
+                  color: 'white',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  zIndex: 1000,
+                  maxWidth: '80%',
+                  fontSize: '14px',
+                  lineHeight: '1.4'
+                }}>
+                  <div style={{ marginBottom: '0.5rem' }}>📱</div>
+                  <div>Rotate your device for better viewing</div>
+                </div>
+              )}
+            </div>
+          )
+        }}
+      />
+    </section>
+  )
+}
+
+export default Projects
