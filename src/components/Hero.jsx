@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { FaFileAlt, FaEnvelope } from 'react-icons/fa'
+import { FaFileAlt, FaEnvelope, FaLinkedin } from 'react-icons/fa'
 import './Hero.scss'
 
 const Hero = () => {
@@ -136,7 +136,7 @@ const Hero = () => {
                 <FaFileAlt className="hero__btn-icon" />
                 <span>Resume</span>
               </motion.a>
-              
+
               <motion.button
                 onClick={scrollToContact}
                 className="hero__btn hero__btn--secondary"
@@ -146,6 +146,18 @@ const Hero = () => {
                 <FaEnvelope className="hero__btn-icon" />
                 <span>Contact</span>
               </motion.button>
+
+              <motion.a
+                href="https://www.linkedin.com/in/jakeronaldsolis"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hero__linkedin"
+                aria-label="LinkedIn profile"
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.96 }}
+              >
+                <FaLinkedin className="hero__linkedin-icon" aria-hidden />
+              </motion.a>
             </motion.div>
           </motion.div>
 

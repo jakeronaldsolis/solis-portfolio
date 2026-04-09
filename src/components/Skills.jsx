@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
   FaCode, FaServer, FaTools, FaDesktop, FaDatabase, FaShieldAlt,
-  FaHtml5, FaCss3Alt, FaJs, FaReact, FaBootstrap, FaPython, FaPhp,
+  FaHtml5, FaCss3Alt, FaJs, FaBootstrap, FaPython, FaPhp,
   FaWindows, FaLinux, FaApple, FaLaptopCode, FaHdd, FaDownload, FaCog
 } from 'react-icons/fa'
 import './Skills.scss'
@@ -21,7 +21,6 @@ const skillCategories = [
       { name: 'HTML5', icon: FaHtml5, isReactIcon: true },
       { name: 'CSS3', icon: FaCss3Alt, isReactIcon: true },
       { name: 'JavaScript', icon: FaJs, isReactIcon: true },
-      { name: 'React', icon: FaReact, isReactIcon: true },
       { name: 'Bootstrap', icon: FaBootstrap, isReactIcon: true }
     ]
   },

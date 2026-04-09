@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import './About.scss'
 
-const summary = `Web developer and machine learning enthusiast skilled in Python, Django, React, and modern web technologies. Experienced in IT support at Sumitomo Electric's Pilipinas Kyohritsu Inc. Built projects with BERT, Random Forest, and SVM. Passionate about building innovative, efficient web solutions.`
+const summary = `Web developer and machine learning enthusiast skilled in Python, Django, and modern web technologies. Experienced in IT support at Sumitomo Electric's Pilipinas Kyohritsu Inc. Built projects with BERT, Random Forest, and SVM. Passionate about building innovative, efficient web solutions.`
 
 const techIcons = [
   { name: 'html', src: '/solis-portfolio/assets/html.png', alt: 'HTML5' },
