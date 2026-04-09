@@ -436,6 +436,33 @@
   }
 }
 
+.projects__card-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--projects-accent);
+  text-decoration: none;
+  width: fit-content;
+
+  svg {
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+}
+
 // Project Modal - Mobile First Design
 .projects__modal-overlay {
   position: fixed;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaTimes, FaArrowRight } from 'react-icons/fa'
+import { FaTimes, FaArrowRight, FaGithub } from 'react-icons/fa'
 import './Projects.scss'
 import Lightbox from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
@@ -11,6 +11,18 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 const projects = [
+  {
+    title: 'Jake Looper',
+    image: '/solis-portfolio/assets/jakelooper.png',
+    githubUrl: 'https://github.com/jakeronaldsolis/jake-looper',
+    description: [
+      'Windows desktop app that loops MP4 videos so the output meets a minimum target runtime you choose (1–10 hours).',
+      'Uses FFmpeg concat demuxer with stream copy (-c copy) for fast, lossless concatenation instead of re-encoding.',
+      'Tkinter GUI for batching files, live progress from FFmpeg stderr, and per-file stop/remove while jobs run.',
+      'Resolves ffmpeg and ffprobe from PATH or from the same folder as the script or bundled executable (portable layout).'
+    ],
+    technologies: ['Python', 'Tkinter', 'FFmpeg', 'FFprobe', 'Desktop', 'Threading']
+  },
   {
     title: 'SIGNED: Sign Language Tutorial',
     image: '/solis-portfolio/assets/signed.png',
@@ -308,6 +320,19 @@ const Projects = () => {
                           </span>
                         )}
                       </div>
+
+                      {project.githubUrl && (
+                        <a
+                          className="projects__card-github"
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <FaGithub aria-hidden />
+                          GitHub
+                        </a>
+                      )}
                     </div>
                   </motion.div>
                 </SwiperSlide>
@@ -361,6 +386,19 @@ const Projects = () => {
                       </span>
                     )}
                   </div>
+
+                  {project.githubUrl && (
+                    <a
+                      className="projects__card-github"
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FaGithub aria-hidden />
+                      GitHub
+                    </a>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -429,6 +467,20 @@ const Projects = () => {
                       ))}
                     </div>
                   </div>
+
+                  {modalProject.githubUrl && (
+                    <div className="projects__modal-tech">
+                      <h4>Repository</h4>
+                      <a
+                        href={modalProject.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: 'var(--projects-accent)' }}
+                      >
+                        github.com/jakeronaldsolis/jake-looper
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
