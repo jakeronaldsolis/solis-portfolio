@@ -4,18 +4,14 @@ import Projects from './components/Projects'
 import Skills from './components/Skills'
 import Contact from './components/Contact'
 
-function App() {
-  return (
-    <div className="app">
-      <main className="main-content">
-        <Hero />
-        <About />
-        <Projects />
-        <Skills />
-        <Contact />
-      </main>
-    </div>
-  )
-}
+const App = () => (
+  <main>
+    <Hero />
+    <About />
+    <Projects />
+    <Skills />
+    <Contact />
+  </main>
+)
 
 export default App
