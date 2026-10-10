@@ -36,7 +36,7 @@ const projects = [
     technologies: ['Python', 'Django', 'BERT', 'NLP', 'AI']
   },
   {
-    title: 'Inventory System with FIFO Logic',
+    title: 'Inventory System',
     image: 'inv.png',
     description: [
       'Engineered a robust inventory management system using FIFO logic for precise stock tracking and reporting.',
